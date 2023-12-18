@@ -1,0 +1,57 @@
+spring:
+  profiles:
+    active: local
+  application:
+    name: test-app
+  main:
+    banner-mode: off
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        types:
+          print:
+            banner: false
+logging:
+  level:
+    root: INFO
+
+management:
+  health:
+    db:
+      enabled: true
+    defaults:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus, metrics
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:mysql://localhost:3306/test?allowPublicKeyRetrieval=true&useSSL=false
+    username: dbuser
+    password: password
+---
+spring:
+  config:
+    activate:
+      on-profile: cluster
+  datasource:
+    url: jdbc:aws-wrapper:mysql://${DATABASE_HOST}/logexecution?useSSL=FALSE&allowPublicKeyRetrieval=true
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: software.amazon.jdbc.Driver
+    hikari:
+      data-source-properties:
+        wrapperPlugins: failover,efm
+        wrapperDialect: aurora-mysql
+      exception-override-class-name: software.amazon.jdbc.util.HikariCPSQLException

@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  demo-db:
+    image: mysql:8.0.28
+    expose:
+      - 3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=test
+      - MYSQL_USER=dbuser
+      - MYSQL_PASSWORD=password
+    ports:
+      - "3306:3306"
